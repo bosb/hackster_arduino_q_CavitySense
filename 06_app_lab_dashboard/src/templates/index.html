@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CavitySense — Wildlife Monitor</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><span class="bat-icon">🦇</span> CavitySense</h1>
+      <p class="subtitle">AI-Powered Wildlife Monitoring for Tree Conservation</p>
+    </header>
+
+    <main>
+      <section class="status-card">
+        <div class="status-indicator" id="statusDot"></div>
+        <div class="status-text">
+          <span class="label" id="labelDisplay">silence</span>
+          <span class="confidence" id="confidenceDisplay">0%</span>
+        </div>
+      </section>
+
+      <section class="gauge-card">
+        <div class="gauge">
+          <div class="gauge-fill" id="gaugeFill" style="width: 0%"></div>
+        </div>
+        <p>Activity Level</p>
+      </section>
+
+      <section class="log-card">
+        <h2>Recent Events</h2>
+        <div class="event-log" id="eventLog">
+          <div class="log-placeholder">Waiting for events...</div>
+        </div>
+      </section>
+
+      <section class="stats-card">
+        <div class="stat">
+          <span class="stat-value" id="eventsToday">0</span>
+          <span class="stat-label">Events Today</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="uptime">0s</span>
+          <span class="stat-label">Uptime</span>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
