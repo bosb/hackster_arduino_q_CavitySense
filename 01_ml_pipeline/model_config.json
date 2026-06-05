@@ -1,0 +1,29 @@
+{
+  "project_name": "cavitysense-wildlife",
+  "target_device": "arduino-uno-q",
+  "sample_rate_hz": 16000,
+  "sample_length_ms": 1000,
+  "window_increase_ms": 500,
+  "classes": ["silence", "wind_noise", "wildlife_activity"],
+  "mfcc": {
+    "frame_length_ms": 25,
+    "frame_stride_ms": 10,
+    "num_coefficients": 13,
+    "fft_length": 512,
+    "low_freq_hz": 300,
+    "high_freq_hz": 8000,
+    "noise_floor_db": -52
+  },
+  "nn": {
+    "layers": [16, 8],
+    "dropout": 0.25,
+    "epochs": 50,
+    "learning_rate": 0.0005,
+    "batch_size": 32
+  },
+  "quantization": "int8",
+  "hardware_limits": {
+    "ram_kb": 128,
+    "flash_kb": 256
+  }
+}

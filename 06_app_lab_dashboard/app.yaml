@@ -1,0 +1,10 @@
+name: cavitysense-dashboard
+icon: 🦇
+description: >
+  CavitySense wildlife activity monitoring dashboard.
+  Real-time acoustic event visualization for tree conservation.
+  Receives classification events from MCU via Bridge.
+ports:
+  - 7000
+bricks:
+  - arduino:web_ui
