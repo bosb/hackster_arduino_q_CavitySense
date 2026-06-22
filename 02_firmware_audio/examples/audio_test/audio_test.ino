@@ -1,5 +1,5 @@
 // CavitySense — Audio Capture + FFT Test Sketch
-// Captures audio via INMP441, computes FFT features, prints to serial.
+// Captures audio via ELV MEMS1 analog mic, computes FFT features, prints to serial.
 // Flash: make flash-audio-test
 
 #include "audio_capture.h"
@@ -11,19 +11,18 @@ void setup() {
   Serial.println("CavitySense Audio Test");
 
   if (!audio_init()) {
-    Serial.println("I2S init FAILED");
+    Serial.println("audio_init FAILED");
     while (1) delay(1000);
   }
 
-  Serial.println("Audio capture running");
-  audio_start_frame_capture();
+  Serial.println("Audio capture running — waiting for frames...");
 }
 
 void loop() {
-  if (!audio_capture_frame_step(256)) return;
+  if (!audio_ready()) return;
 
   int16_t* frame = audio_get_frame();
-  if (!frame) { audio_clear_ready(); audio_start_frame_capture(); return; }
+  if (!frame) { audio_clear_ready(); return; }
 
   // Compute peak for quick visual check
   int32_t peak = 0;
@@ -44,5 +43,4 @@ void loop() {
   }
 
   audio_clear_ready();
-  audio_start_frame_capture();
 }

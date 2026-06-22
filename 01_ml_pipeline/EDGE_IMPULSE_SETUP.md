@@ -8,7 +8,7 @@
 | Project name | `cavitysense-wildlife` |
 | Target device | Arduino UNO Q |
 | Microcontroller | STM32 |
-| Audio input | INMP441 microphone |
+| Audio input | ELV MEMS1 analog MEMS microphone |
 | Sample rate | 16 kHz mono |
 | Classes | `silence`, `wind_noise`, `wildlife_activity` |
 

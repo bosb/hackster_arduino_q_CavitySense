@@ -1,7 +1,6 @@
 // CavitySense — AI-Powered Wildlife Monitoring for Tree Conservation
 // Arduino UNO Q firmware
-// INMP441 → I2S → FFT features → Edge Impulse classifier → LED matrix + Bridge IPC
-// Pins: D7=L/R, D8=SD(in), D9=SCK, D10=WS
+// ELV MEMS1 analog mic → ADC → GPT timer → FFT features → Edge Impulse classifier → LED matrix + Bridge IPC
 // FQBN: arduino:zephyr:unoq:wait_linux_boot=no
 
 // Suppress EI logging: on Zephyr, ei_printf() writes to Serial which
@@ -124,7 +123,6 @@ void setup() {
   }
 
   classifier_init();
-  audio_start_frame_capture();
 
   unsigned long now = millis();
   _last_heartbeat = now - BRIDGE_INTERVAL_MS;

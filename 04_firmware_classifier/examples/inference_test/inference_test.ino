@@ -15,26 +15,24 @@ void setup() {
   display_init();
 
   if (!audio_init()) {
-    Serial.println("I2S init FAILED");
+    Serial.println("audio_init FAILED");
     while (1) delay(1000);
   }
 
   classifier_init();
   Serial.println("Ready — making sounds to test classification");
-  audio_start_frame_capture();
 }
 
 void loop() {
   display_startup_graph(millis());
 
-  if (!audio_capture_frame_step(256)) return;
+  if (!audio_ready()) return;
 
   int16_t* frame = audio_get_frame();
-  if (!frame) { audio_clear_ready(); audio_start_frame_capture(); return; }
+  if (!frame) { audio_clear_ready(); return; }
 
   ClassifierResult result = classifier_run(frame);
   audio_clear_ready();
-  audio_start_frame_capture();
 
   Serial.print("Result: ");
   Serial.print(result.label);

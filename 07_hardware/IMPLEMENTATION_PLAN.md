@@ -7,7 +7,7 @@ Complete hardware documentation for the CavitySense node: bill of materials, wir
 ## Dependencies
 
 - **None** — purely documentation
-- Components must match what `02_firmware_audio` expects (INMP441, I2S pins D7-D10)
+- Components must match what `02_firmware_audio` expects (ELV MEMS1, A0 analog in)
 
 ## Files to Create
 
@@ -27,10 +27,10 @@ Complete hardware documentation for the CavitySense node: bill of materials, wir
 | Component | Part | Qty | Approx Cost | Notes |
 |-----------|------|-----|-------------|-------|
 | Arduino UNO Q | ABX00087 | 1 | €40-50 | Contest hardware |
-| MEMS Microphone | INMP441 breakout | 1 | €3-5 | I2S digital output |
-| Jumper wires | Female-female Dupont | 6 | €1 | For prototyping |
+| MEMS Microphone | ELV MEMS1 (SPU0410LR5H-QB breakout) | 1 | €3-5 | Analog output, onboard 1µF DC-block + 1µF decouple |
+| Jumper wires | Female-female Dupont | 3 | €0.50 | For prototyping |
 | Breadboard | Half-size | 1 | €3 | Prototyping |
-| Capacitor | 100 nF ceramic | 1 | €0.10 | Decoupling near mic |
+| Capacitor | (none — onboard) | – | – | Module includes C1 (1µF DC-block) + C2 (1µF decouple) |
 | USB-C cable | Data + power | 1 | €3 | PC connection |
 | Battery (optional) | 5V power bank | 1 | €10 | Field deployment |
 | Enclosure (optional) | 3D printed box | 1 | €2 | Weather protection |
@@ -41,52 +41,45 @@ Complete hardware documentation for the CavitySense node: bill of materials, wir
 
 #### Critical Pin Mapping
 
-| INMP441 Pin | Connect to UNO Q | Notes |
-|-------------|------------------|-------|
-| VDD | 3.3V | Must be 3.3V, not 5V! |
+| ELV MEMS1 Pin | Connect to UNO Q | Notes |
+|---------------|------------------|-------|
+| VDD | 3.3V | Power from 3.3V |
 | GND | GND | Common ground |
-| SD (Data) | **D8** | I2S serial data into MCU |
-| WS (Word Select) | **D10** | I2S LRCLK from MCU |
-| SCK (Bit Clock) | **D9** | I2S BCLK from MCU |
-| L/R (Channel) | **D7** | Driven LOW by firmware = left channel mono |
+| OUT | **A0** | Analog audio output (AC-coupled via onboard C1) |
 
 #### Additional Requirements
 
-- Place **100 nF ceramic capacitor** between VDD and GND as close to the INMP441 breakout as possible
+- No external components needed — C1 (1µF DC-block) and C2 (1µF decouple) are onboard
 - Keep jumper wires short (< 15 cm) to reduce noise
-- Power from 3.3V only (5V will damage the INMP441)
+- Power from 3.3V only
 
 ### 3. ASCII Schematic (`schematic.md`)
 
 ```text
-Arduino UNO Q                                  INMP441
--------------                                  -------
-  3.3V    -----------------------------------> VDD
-  GND     -----------------------------------> GND
-  D10     -----------------------------------> WS   (LRCLK)
-  D9      -----------------------------------> SCK  (BCLK)
-  D8      <----------------------------------- SD   (data out)
-  D7      -----------------------------------> L/R  (LOW = left ch)
+Arduino UNO Q                          ELV MEMS1 module
+-------------                          -----------------
+   3.3V    ---------------------------> VDD
+   GND     ---------------------------> GND
+   A0      <--------------------------- OUT     (analog, AC-coupled)
 
-Optional decoupling:
-  VDD o----||----o GND
-         100 nF
-  (placed near INMP441 breakout)
+Module internal:
+   OUT o--||--o SPU0410LR5H-OUT   C1 = 1 µF DC-block
+        C1
+   VDD o--||--o GND               C2 = 1 µF decouple
+        C2
 ```
 
 ### 4. Validation Checklist (`checklist.md`)
 
-- [ ] 3.3V supply verified: INMP441 VDD measures ~3.3V relative to GND
-- [ ] Ground connected: mic GND and UNO Q GND are common
-- [ ] I2S data: INMP441 SD → UNO Q D8
-- [ ] I2S word-select: INMP441 WS → UNO Q D10
-- [ ] I2S bit-clock: INMP441 SCK → UNO Q D9
-- [ ] Channel select: INMP441 L/R → UNO Q D7 (firmware drives LOW)
-- [ ] Decoupling: 100 nF between VDD and GND near mic
+- [ ] 3.3V supply verified: ELV MEMS1 VDD ≈ 3.3V relative to GND
+- [ ] Ground connected: mic GND and UNO Q GND share a common rail
+- [ ] Audio out: ELV MEMS1 OUT → UNO Q A0
+- [ ] No external components needed — onboard C1/C2 handle DC-block and decoupling
 - [ ] No shorts: multimeter continuity check 3.3V ↔ GND
 - [ ] Board powers up normally with mic attached
-- [ ] No I2S init error in serial monitor
-- [ ] Audio activity visible: peak changes on clap/tap
+- [ ] No ADC init error in serial monitor at 115200 baud
+- [ ] Audio activity visible: serial plotter shows amplitude changes on clap/tap
+- [ ] Wiring matches schematic exactly
 - [ ] Pin map verified against board documentation
 
 ### 5. Enclosure Design (optional)
@@ -111,7 +104,7 @@ For field deployment, design a small weather-resistant enclosure:
 
 - [ ] All pins correctly mapped
 - [ ] Device powers on without shorts
-- [ ] I2S init succeeds in firmware
+- [ ] ADC + timer init succeeds in firmware
 - [ ] Audio signal visible in serial plotter
 - [ ] Breadboard prototype matches schematic
 - [ ] Checksum: each checklist item verified

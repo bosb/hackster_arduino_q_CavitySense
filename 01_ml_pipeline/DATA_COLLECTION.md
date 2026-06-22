@@ -3,7 +3,7 @@
 ## Recording Equipment
 
 - Laptop built-in microphone, external USB mic, or phone
-- Or use the INMP441 + UNO Q (record via serial, convert to WAV)
+- Or use the ELV MEMS1 + UNO Q (record via serial, convert to WAV)
 - Any device that can record 16-bit/16 kHz WAV files
 
 ## Recording Environment

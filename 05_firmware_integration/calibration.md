@@ -32,10 +32,10 @@ If features seem too low or too high, adjust normalization in `feature_extractio
 
 ## Audio Gain
 
-The INMP441 has fixed sensitivity. If audio is too quiet:
+The ELV MEMS1 (SPU0410LR5H-QB) output is centered at VDD/2. If audio is too quiet:
 
 1. Ensure the mic is within 1m of the sound source
-2. Check that I2S 32-bit frames are being read correctly (upper 24 bits)
+2. Check that the ADC bias calibration ran (should be ~2048 counts at idle)
 3. The ADC reference is 3.3V — signals should use the full dynamic range
 
 ## Serial Debug Output

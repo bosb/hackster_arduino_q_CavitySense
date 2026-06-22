@@ -28,8 +28,8 @@ Final merged Arduino sketch that combines audio capture (02), LED matrix (03), c
 ```cpp
 // CavitySense — AI-Powered Wildlife Monitoring for Tree Conservation
 // Arduino UNO Q firmware
-// INMP441 → I2S → FFT features → Edge Impulse classifier → LED matrix + Bridge IPC
-// Pins: D7=L/R, D8=SD(in), D9=SCK, D10=WS
+// ELV MEMS1 → ADC → FFT features → Edge Impulse classifier → LED matrix + Bridge IPC
+// Pin: A0 analog in
 
 // Suppress EI logging on Serial (interferes with Bridge router)
 void ei_printf(const char* /*format*/, ...) {}
@@ -167,7 +167,7 @@ name: cavitysense
 icon: 🦇
 description: >
   AI-powered wildlife activity monitoring for tree conservation.
-  Detects acoustic events via INMP441 microphone and Edge Impulse TinyML.
+  Detects acoustic events via ELV MEMS1 microphone and Edge Impulse TinyML.
 bricks:
   - arduino:web_ui
 ```
