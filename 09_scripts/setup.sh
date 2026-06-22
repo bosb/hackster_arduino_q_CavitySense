@@ -63,7 +63,7 @@ echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━�
 echo -e "${GREEN}Setup complete.${NC}"
 echo
 echo "Next steps:"
-echo "  1. Wire INMP441 per 07_hardware/WIRING.md"
+echo "  1. Wire ELV MEMS1 per 07_hardware/WIRING.md"
 echo "  2. Plug in UNO Q via USB"
 echo "  3. Run: arduino-cli board list  (verify board detected)"
 echo "  4. Train model: follow 01_ml_pipeline/EDGE_IMPULSE_SETUP.md"

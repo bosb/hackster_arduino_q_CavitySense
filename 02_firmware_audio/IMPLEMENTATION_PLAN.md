@@ -1,12 +1,12 @@
-# 02 — Firmware: INMP441 Audio Capture + Feature Extraction
+# 02 — Firmware: ELV MEMS1 Audio Capture + Feature Extraction
 
 ## Purpose
 
-I2S audio capture from INMP441 microphone at 16 kHz, 1024-sample frames, with FFT-based feature extraction. Exposes a clean API (`audio_capture.h`) used by the classifier and integration layers.
+Analog audio capture from ELV MEMS1 microphone at 16 kHz, 1024-sample frames, with FFT-based feature extraction. Exposes a clean API (`audio_capture.h`) used by the classifier and integration layers.
 
 ## Dependencies
 
-- Hardware: INMP441 wired per `07_hardware/` (D10=WS, D9=SCK, D8=SD, D7=L/R)
+- Hardware: ELV MEMS1 wired per `07_hardware/` (A0 analog in)
 - **Output**: library files consumed by `04_firmware_classifier` and `05_firmware_integration`
 
 ## Files to Create
@@ -14,7 +14,7 @@ I2S audio capture from INMP441 microphone at 16 kHz, 1024-sample frames, with FF
 | File | Role |
 |------|------|
 | `src/audio_capture.h` | Audio buffer API: `audio_init()`, `audio_ready()`, `audio_get_frame()`, `audio_clear_ready()` |
-| `src/audio_capture.cpp` | I2S backend: pin-mapped bit-bang or DMA-based capture |
+| `src/audio_capture.cpp` | Analog ADC backend: GPT timer (TIM6) + continuous ADC capture |
 | `src/feature_extraction.h` | FFT + 8-band energy feature extraction |
 | `src/feature_extraction.cpp` | ArduinoFFT wrapper, band energy computation, normalization |
 | `examples/audio_test/audio_test.ino` | Standalone test sketch: capture + print peak levels |
@@ -22,16 +22,13 @@ I2S audio capture from INMP441 microphone at 16 kHz, 1024-sample frames, with FF
 
 ## Step-by-Step Implementation
 
-### 1. I2S Pin Configuration (Critical!)
-
-The UNO Q I2S is **not** on the default Arduino I2S pins. Use:
+### 1. Analog Pin Configuration
 
 | Function | UNO Q Pin |
 |----------|-----------|
-| WS (LRCLK) | **D10** |
-| SCK (BCLK) | **D9** |
-| SD (Data In) | **D8** |
-| L/R (Channel Select) | **D7** (driven LOW = left channel mono) |
+| Audio in (ELV MEMS1 OUT) | **A0** |
+| Power (ELV MEMS1 VDD) | **3.3V** |
+| Ground (ELV MEMS1 GND) | **GND** |
 
 ### 2. `audio_capture.h` API
 
@@ -44,7 +41,7 @@ The UNO Q I2S is **not** on the default Arduino I2S pins. Use:
 #define AUDIO_SAMPLE_RATE   16000
 #define AUDIO_FRAME_SAMPLES 1024   // 64 ms at 16 kHz
 
-bool audio_init();                  // Init I2S, start capture
+bool audio_init();                  // Init ADC, calibrate bias, start GPT timer capture
 bool audio_ready();                 // True when a full frame is available
 int16_t* audio_get_frame();        // Pointer to current 1024-sample frame
 void audio_clear_ready();          // Release buffer for reuse
@@ -52,24 +49,32 @@ void audio_clear_ready();          // Release buffer for reuse
 #endif
 ```
 
-### 3. `audio_capture.cpp` — I2S Backend
+### 3. `audio_capture.cpp` — ADC + GPT Timer Backend
 
 Key requirements:
-- Sample rate: **16 kHz** mono
-- I2S frame: 32-bit (data in upper 24 bits)
-- Use the correct I2S library or bit-bang for the UNO Q Zephyr core
-- Buffer: double-buffered ping-pong to avoid drops
-- Frame trigger: interrupt or DMA callback sets `_ready = true`
+- Sample rate: **16 kHz** mono (62.5 µs period)
+- GPT timer: TIM6 (basic timer at 0x40001000, PSC=0, ARR=9999 → 160 MHz / 10000 = 16 kHz)
+- ADC: continuous conversion mode via STM32 LL driver, reads data register in ISR
+- Bias calibration: 128 synchronous analogRead samples averaged before timer starts
+- Buffer: single-buffer 1024 samples, ISR writes until full, then sets `_ready = true`
+- Frame trigger: TIM6 update interrupt registered via `irq_connect_dynamic()`
 
-Reference: the reference project uses bit-bang I2S due to Zephyr I2S limitations. Check `arduino:zephyr:unoq` I2S availability. Bit-bang fallback:
+ISR:
 
 ```cpp
-// Bit-bang I2S read (fallback if hardware I2S unavailable on these pins)
-static void capture_sample() {
-  digitalWrite(WS_PIN, LOW);  // left channel
-  digitalWrite(SCK_PIN, LOW);
-  delayMicroseconds(1);
-  // read 32 bits from SD pin...
+static void tim6_isr(const void*) {
+  if (!(TIM6->SR & TIM_SR_UIF)) return;
+  TIM6->SR = ~TIM_SR_UIF;
+  int32_t sample = (int32_t)LL_ADC_REG_ReadConversionData12(ADC1) - _bias;
+  if (sample < -32768) sample = -32768;
+  if (sample > 32767) sample = 32767;
+  if (!_ready) {
+    _buffer[_buffer_pos++] = (int16_t)sample;
+    if (_buffer_pos >= AUDIO_FRAME_SAMPLES) {
+      _buffer_pos = 0;
+      _ready = true;
+    }
+  }
 }
 ```
 
@@ -119,7 +124,7 @@ void setup() {
   while (!Serial && millis() < 3000);
   Serial.println("Audio test starting...");
   if (!audio_init()) {
-    Serial.println("I2S init failed");
+    Serial.println("ADC init failed");
     while (1) delay(1000);
   }
 }
@@ -149,13 +154,14 @@ void loop() {
 
 ## Expected Outputs
 
-- `src/audio_capture.h` and `src/audio_capture.cpp` — working I2S capture
+- `src/audio_capture.h` and `src/audio_capture.cpp` — working ADC + GPT capture
 - `src/feature_extraction.h` and `src/feature_extraction.cpp` — FFT + 8-band features
 - `examples/audio_test/` — standalone test sketch
 
 ## Verification
 
-- [ ] `audio_init()` returns true (no I2S init failure)
+- [ ] `audio_init()` returns true (ADC + timer init succeeds)
+- [ ] Bias calibration: idle reading ~0 ±100 counts
 - [ ] Peak amplitude changes when clapping/tapping near mic
 - [ ] Feature vector prints 8 meaningful float values per frame
 - [ ] Frame rate: ~15.6 fps (1000 ms / 64 ms per frame)

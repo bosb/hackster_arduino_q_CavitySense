@@ -10,7 +10,7 @@ CavitySense is a small, cheap device that listens to tree cavities and detects w
 
 ## How It Works
 
-1. **Listening**: A tiny microphone (INMP441) picks up sounds near a tree cavity
+1. **Listening**: A tiny analog microphone (ELV MEMS1) picks up sounds near a tree cavity
 2. **Analyzing**: The Arduino UNO Q converts sounds into frequency patterns (like a musical note chart)
 3. **AI Classification**: A trained AI model (Edge Impulse) classifies the patterns into three categories:
    - *Silence* — no activity

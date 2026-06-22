@@ -44,7 +44,7 @@ Block diagram description (already drafted in conversation):
 ```
 [Tree Cavity Sound]
 ↓
-[INMP441 Digital Microphone]  →  I2S (16 kHz)
+[ELV MEMS1 Analog Mic]  →  ADC (16 kHz)
 ↓
 [Arduino UNO Q MCU (STM32)]
 ├── FFT Feature Extraction
@@ -67,7 +67,7 @@ Block diagram description (already drafted in conversation):
 |------|--------|-------|
 | 0-10s | Device on desk, LED matrix idle | "CavitySense is a low-cost AI-powered wildlife monitor..." |
 | 10-20s | Hand approaches, snaps fingers | "...that detects acoustic activity inside tree cavities..." |
-| 20-30s | LED bat animation activates | "...using an INMP441 microphone and Edge Impulse TinyML." |
+| 20-30s | LED bat animation activates | "...using an ELV MEMS1 analog microphone and Edge Impulse TinyML." |
 | 30-40s | Phone showing dashboard | "Results appear on a mobile dashboard via App Lab..." |
 | 40-50s | Photo of tree with device | "...helping conservation teams identify which trees to protect." |
 | 50-60s | All components visible | "CavitySense: democratizing wildlife monitoring with edge AI." |
@@ -89,7 +89,7 @@ Map the project to each judging criterion:
 
 Capture:
 
-1. **Breadboard prototype** — INMP441 wired to UNO Q
+1. **Breadboard prototype** — ELV MEMS1 wired to UNO Q
 2. **LED matrix close-up** — bat icon illuminated
 3. **Dashboard screenshot** — App Lab dashboard showing activity
 4. **Full setup** — device + phone showing dashboard
@@ -99,7 +99,7 @@ Capture:
 
 Plain-language explanation:
 
-- The INMP441 microphone listens to sounds near a tree cavity
+- The ELV MEMS1 microphone listens to sounds near a tree cavity
 - The Arduino UNO Q converts these sounds into frequency patterns
 - A TinyML model (trained with Edge Impulse) classifies the patterns
 - Results flash on the LED matrix and send to a dashboard

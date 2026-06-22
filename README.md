@@ -1,13 +1,13 @@
 # 🦇 CavitySense: AI-Powered Wildlife Monitoring for Tree Conservation
 
-Low-cost acoustic monitoring node that detects wildlife activity inside tree cavities using Arduino UNO Q + INMP441 microphone + Edge Impulse TinyML + App Lab dashboard.
+Low-cost acoustic monitoring node that detects wildlife activity inside tree cavities using Arduino UNO Q + ELV MEMS1 analog MEMS microphone + Edge Impulse TinyML + App Lab dashboard.
 
 ## Project Structure
 
 | Module | Purpose |
 |--------|---------|
 | `01_ml_pipeline/` | Edge Impulse TinyML training (3-class audio classifier) |
-| `02_firmware_audio/` | INMP441 I2S capture, FFT, feature extraction library |
+| `02_firmware_audio/` | ELV MEMS1 analog capture, FFT, feature extraction library |
 | `03_firmware_led_matrix/` | 13×8 grayscale LED matrix graphics (bat icons, status bar) |
 | `04_firmware_classifier/` | Edge Impulse inference + label→icon mapping library |
 | `05_firmware_integration/` | Combined firmware sketch (audio + classifier + LED + Bridge IPC) |

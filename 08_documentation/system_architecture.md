@@ -5,8 +5,8 @@
 ```text
 [Tree Cavity Sound]
 ↓
-[INMP441 Digital Microphone]
-↓  I2S (16 kHz mono, 32-bit frames)
+[ELV MEMS1 Analog Microphone]
+↓  ADC (16 kHz, GPT timer-sampled)
 [Arduino UNO Q — MCU Core (STM32)]
 ├── Audio Capture (double-buffered ping-pong)
 ├── FFT Feature Extraction (8 frequency bands)
@@ -24,7 +24,7 @@
 
 ## Data Flow
 
-1. **Acquisition**: INMP441 captures audio → I2S interface → 1024-sample frames at 16 kHz (64ms windows)
+1. **Acquisition**: ELV MEMS1 captures audio → ADC → GPT-timed 1024-sample frames at 16 kHz (64ms windows)
 2. **Feature Extraction**: FFT → 8 frequency band energy features (0-500Hz, 500-1kHz, 1-2kHz, 2-3kHz, 3-4kHz, 4-5kHz, 5-7kHz, 7-8kHz)
 3. **Classification**: Edge Impulse MFCC → TinyML neural network → label + confidence
 4. **Visualization**: LED matrix shows icon based on class (bat for wildlife, wavy lines for wind, ring for idle)
@@ -34,7 +34,7 @@
 
 | Layer | Component |
 |-------|-----------|
-| Sensor | INMP441 MEMS microphone (I2S digital output) |
+| Sensor | ELV MEMS1 analog MEMS microphone (SPU0410LR5H-QB) |
 | MCU | Arduino UNO Q STM32U585 (Zephyr RTOS) |
 | Display | 13×8 grayscale LED matrix (built-in) |
 | Linux | Arduino UNO Q Linux co-processor |
@@ -44,7 +44,7 @@
 
 | Layer | Technology |
 |-------|------------|
-| Audio Driver | Bit-bang I2S on D7-D10 |
+| Audio Driver | GPT timer (TIM6) + continuous ADC on A0 |
 | Signal Processing | ArduinoFFT library |
 | ML Framework | Edge Impulse (MFCC + Dense NN, INT8 quantized) |
 | Firmware | Arduino sketch (Zephyr LLEXT) |

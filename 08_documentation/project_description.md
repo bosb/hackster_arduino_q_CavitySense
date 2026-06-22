@@ -16,7 +16,7 @@ CavitySense is a low-cost, AI-powered acoustic monitoring node designed to detec
 
 CavitySense operates as an edge AI device. System Workflow:
 
-1. The INMP441 microphone captures environmental sound at 16 kHz
+1. The ELV MEMS1 analog microphone captures environmental sound at 16 kHz
 2. The Arduino UNO Q processes audio frames in real time (1024 samples, 64ms windows)
 3. FFT-based spectral features are extracted from the signal
 4. A lightweight Edge Impulse TinyML classifier determines the probability of wildlife activity across 3 classes: silence, wind_noise, wildlife_activity
