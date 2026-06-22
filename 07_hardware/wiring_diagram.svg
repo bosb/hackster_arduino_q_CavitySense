@@ -1,152 +1,205 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="'Segoe UI', Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 580" font-family="'Segoe UI', Arial, sans-serif">
   <defs>
-    <marker id="arrow-end" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 Z" fill="#555"/>
-    </marker>
-    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
-      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.15"/>
-    </filter>
+    <filter id="shadow"><feDropShadow dx="1" dy="2" stdDeviation="3" flood-opacity="0.12"/></filter>
+    <marker id="dot" markerWidth="8" markerHeight="8" refX="4" refY="4"><circle cx="4" cy="4" r="3" fill="#222"/></marker>
   </defs>
+  <rect width="800" height="580" fill="#fafafa" rx="6"/>
+  <text x="400" y="28" text-anchor="middle" font-size="18" font-weight="700" fill="#111">CavitySense — Wiring Diagram</text>
 
-  <rect width="800" height="500" fill="#f8f9fa" rx="8"/>
-  <text x="400" y="36" text-anchor="middle" font-size="22" font-weight="700" fill="#222">CavitySense — Wiring Diagram</text>
-  <text x="400" y="58" text-anchor="middle" font-size="13" fill="#666">Arduino UNO Q + ELV MEMS1 (SPU0410LR5H-QB) analog MEMS microphone</text>
+  <!-- ════════════════════════════════════════════════════════
+       ARDUINO UNO Q (top)
+       ════════════════════════════════════════════════════════ -->
+  <g transform="translate(40, 50)" filter="url(#shadow)">
+    <rect x="0" y="0" width="340" height="170" rx="6" fill="#fff" stroke="#0887C7" stroke-width="2"/>
+    <!-- USB-C -->
+    <rect x="-2" y="60" width="14" height="40" rx="3" fill="#333"/>
+    <rect x="3" y="65" width="5" height="30" rx="1" fill="#555"/>
+    <text x="18" y="88" font-size="7" fill="#999">USB-C</text>
+    <!-- STM32 + Linux label -->
+    <rect x="50" y="30" width="240" height="40" rx="4" fill="#f5f5f5" stroke="#ccc" stroke-width="1"/>
+    <text x="170" y="48" text-anchor="middle" font-size="9" fill="#444">STM32U585 (Zephyr) + Linux co-processor</text>
+    <text x="170" y="62" text-anchor="middle" font-size="7" fill="#888">Dual-core Arduino UNO Q</text>
+    <!-- LED Matrix -->
+    <rect x="50" y="90" width="240" height="32" rx="4" fill="#1a1a2e" stroke="#333" stroke-width="1"/>
+    <text x="170" y="108" text-anchor="middle" font-size="9" fill="#7cff7c" font-weight="600">LED Matrix (13 × 8 grayscale)</text>
+    <text x="170" y="118" text-anchor="middle" font-size="6" fill="#888">built-in display</text>
 
-  <!-- Arduino UNO Q board -->
-  <rect x="50" y="100" width="280" height="340" rx="8" fill="#fcfcfc" stroke="#0887C7" stroke-width="3" filter="url(#shadow)"/>
-  <rect x="50" y="100" width="280" height="40" rx="8" fill="#0887C7"/>
-  <rect x="50" y="132" width="280" height="8" fill="#0887C7"/>
-  <text x="190" y="126" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">Arduino UNO Q</text>
+    <!-- ▸ Top header — DIGITAL: D13 … D0, GND, AREF (leftward from D13) -->
+    <g font-size="6.5" fill="#444">
+      <text x="340" y="14" text-anchor="end" font-size="8" fill="#0887C7" font-weight="700">TOP HEADER — DIGITAL</text>
+      <!-- D13 -->
+      <rect x="324" y="18" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="332" y="36" text-anchor="middle">D13</text>
+      <rect x="302" y="18" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="310" y="36" text-anchor="middle">D12</text>
+      <rect x="280" y="18" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="288" y="36" text-anchor="middle">D11</text>
+      <rect x="258" y="18" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="266" y="36" text-anchor="middle">D10</text>
+      <rect x="236" y="18" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="244" y="36" text-anchor="middle">D9</text>
+      <rect x="214" y="18" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="222" y="36" text-anchor="middle">D8</text>
+      <rect x="192" y="18" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="200" y="36" text-anchor="middle">D7</text>
+      <rect x="170" y="18" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="178" y="36" text-anchor="middle">D6</text>
+      <rect x="148" y="18" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="156" y="36" text-anchor="middle">D5</text>
+      <rect x="126" y="18" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="134" y="36" text-anchor="middle">D4</text>
+      <rect x="104" y="18" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="112" y="36" text-anchor="middle">D3</text>
+      <rect x="82" y="18" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="90" y="36" text-anchor="middle">D2</text>
+      <rect x="60" y="18" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="68" y="36" text-anchor="middle">D1</text>
+      <rect x="38" y="18" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="46" y="36" text-anchor="middle">D0</text>
+      <rect x="16" y="18" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="24" y="36" text-anchor="middle">GND</text>
+      <rect x="-6" y="18" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="2" y="36" text-anchor="middle">AREF</text>
+    </g>
 
-  <!-- USB connector -->
-  <rect x="140" y="440" width="100" height="18" rx="4" fill="#333"/>
-  <text x="190" y="456" text-anchor="middle" font-size="9" fill="#aaa">USB-C</text>
-
-  <!-- Digital header pins (top) -->
-  <g>
-    <text x="70" y="168" font-size="9" fill="#555">D13</text>
-    <rect x="68" y="172" width="10" height="16" rx="2" fill="#ddd" stroke="#999" stroke-width="1"/>
-    <text x="88" y="168" font-size="9" fill="#555">D12</text>
-    <rect x="86" y="172" width="10" height="16" rx="2" fill="#ddd" stroke="#999" stroke-width="1"/>
-    <text x="106" y="168" font-size="9" fill="#555">D11</text>
-    <rect x="104" y="172" width="10" height="16" rx="2" fill="#ddd" stroke="#999" stroke-width="1"/>
-    <text x="124" y="168" font-size="9" fill="#555">D10</text>
-    <rect x="122" y="172" width="10" height="16" rx="2" fill="#ddd" stroke="#999" stroke-width="1"/>
-    <text x="142" y="168" font-size="9" fill="#555">D9</text>
-    <rect x="140" y="172" width="10" height="16" rx="2" fill="#ddd" stroke="#999" stroke-width="1"/>
-    <text x="160" y="168" font-size="9" fill="#555">D8</text>
-    <rect x="158" y="172" width="10" height="16" rx="2" fill="#ddd" stroke="#999" stroke-width="1"/>
-    <text x="178" y="168" font-size="9" fill="#555">D7</text>
-    <rect x="176" y="172" width="10" height="16" rx="2" fill="#ddd" stroke="#999" stroke-width="1"/>
-    <text x="196" y="168" font-size="9" fill="#555">D6</text>
-    <rect x="194" y="172" width="10" height="16" rx="2" fill="#ddd" stroke="#999" stroke-width="1"/>
-    <text x="214" y="168" font-size="9" fill="#555">D5</text>
-    <rect x="212" y="172" width="10" height="16" rx="2" fill="#ddd" stroke="#999" stroke-width="1"/>
-    <text x="232" y="168" font-size="9" fill="#555">D4</text>
-    <rect x="230" y="172" width="10" height="16" rx="2" fill="#ddd" stroke="#999" stroke-width="1"/>
-    <text x="250" y="168" font-size="9" fill="#555">D3</text>
-    <rect x="248" y="172" width="10" height="16" rx="2" fill="#ddd" stroke="#999" stroke-width="1"/>
-    <text x="268" y="168" font-size="9" fill="#555">D2</text>
-    <rect x="266" y="172" width="10" height="16" rx="2" fill="#ddd" stroke="#999" stroke-width="1"/>
-    <text x="286" y="168" font-size="9" fill="#555">D1</text>
-    <rect x="284" y="172" width="10" height="16" rx="2" fill="#ddd" stroke="#999" stroke-width="1"/>
-    <text x="304" y="168" font-size="9" fill="#555">D0</text>
-    <rect x="302" y="172" width="10" height="16" rx="2" fill="#ddd" stroke="#999" stroke-width="1"/>
+    <!-- ▸ Bottom header — PWR + ANALOG: VIN, GND, 5V, 3V3, A5…A0, GND -->
+    <g font-size="6.5" fill="#444">
+      <text x="340" y="156" text-anchor="end" font-size="8" fill="#0887C7" font-weight="700">BOTTOM HEADER — POWER / ANALOG</text>
+      <rect x="324" y="140" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="332" y="134" text-anchor="middle">VIN</text>
+      <rect x="302" y="140" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="310" y="134" text-anchor="middle">GND</text>
+      <rect x="280" y="140" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="288" y="134" text-anchor="middle">5V</text>
+      <!-- 3V3 — highlighted -->
+      <rect x="258" y="140" width="16" height="12" rx="1" fill="#ffcccc" stroke="#c62828" stroke-width="2"/>
+      <text x="266" y="134" text-anchor="middle" fill="#c62828" font-weight="700">3V3</text>
+      <rect x="236" y="140" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="244" y="134" text-anchor="middle">A5</text>
+      <rect x="214" y="140" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="222" y="134" text-anchor="middle">A4</text>
+      <rect x="192" y="140" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="200" y="134" text-anchor="middle">A3</text>
+      <rect x="170" y="140" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="178" y="134" text-anchor="middle">A2</text>
+      <rect x="148" y="140" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="156" y="134" text-anchor="middle">A1</text>
+      <!-- A0 — highlighted -->
+      <rect x="126" y="140" width="16" height="12" rx="1" fill="#dde8ff" stroke="#1565c0" stroke-width="2"/>
+      <text x="134" y="134" text-anchor="middle" fill="#1565c0" font-weight="700">A0</text>
+      <rect x="104" y="140" width="16" height="12" rx="1" fill="#e8e8e8" stroke="#bbb" stroke-width="1"/>
+      <text x="112" y="134" text-anchor="middle">GND</text>
+    </g>
   </g>
 
-  <!-- Analog header pins (bottom) -->
-  <g>
-    <text x="70" y="288" font-size="9" fill="#555">5V</text>
-    <rect x="122" y="290" width="10" height="16" rx="2" fill="#ddd" stroke="#999" stroke-width="1"/>
-    <text x="72" y="310" font-size="9" fill="red" font-weight="700">3V3</text>
-    <rect x="122" y="312" width="10" height="16" rx="2" fill="#ffcccc" stroke="#c00" stroke-width="1.5"/>
-    <text x="70" y="332" font-size="9" fill="#555">A5</text>
-    <rect x="122" y="334" width="10" height="16" rx="2" fill="#ddd" stroke="#999" stroke-width="1"/>
-    <text x="70" y="354" font-size="9" fill="#555">A4</text>
-    <rect x="122" y="356" width="10" height="16" rx="2" fill="#ddd" stroke="#999" stroke-width="1"/>
-    <text x="70" y="376" font-size="9" fill="#555">A3</text>
-    <rect x="122" y="378" width="10" height="16" rx="2" fill="#ddd" stroke="#999" stroke-width="1"/>
-    <text x="70" y="398" font-size="9" fill="#555">A2</text>
-    <rect x="122" y="400" width="10" height="16" rx="2" fill="#ddd" stroke="#999" stroke-width="1"/>
-    <text x="70" y="420" font-size="9" fill="#555">A1</text>
-    <rect x="122" y="422" width="10" height="16" rx="2" fill="#ddd" stroke="#999" stroke-width="1"/>
-    <text x="40" y="272" font-size="11" fill="#555" font-weight="600">A0 ⬤</text>
-    <circle cx="127" cy="272" r="6" fill="#4488ff" stroke="#2264c0" stroke-width="1.5"/>
+  <!-- ════════════════════════════════════════════════════════
+       ELV MEMS1 MODULE (bottom)
+       ════════════════════════════════════════════════════════ -->
+  <g transform="translate(500, 330)" filter="url(#shadow)">
+    <rect x="0" y="0" width="220" height="180" rx="6" fill="#fff" stroke="#2a9d46" stroke-width="2"/>
+    <!-- Header -->
+    <rect x="0" y="0" width="220" height="28" rx="6" fill="#2a9d46"/>
+    <rect x="0" y="22" width="220" height="6" fill="#2a9d46"/>
+    <text x="110" y="19" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">ELV MEMS1 Module</text>
+
+    <text x="110" y="50" text-anchor="middle" font-size="8" fill="#2a9d46" font-weight="600">SPU0410LR5H-QB analog MEMS microphone</text>
+
+    <!-- Sensor element -->
+    <rect x="50" y="60" width="120" height="30" rx="4" fill="#e8f5e9" stroke="#2a9d46" stroke-width="1.5"/>
+    <text x="110" y="78" text-anchor="middle" font-size="10" fill="#2a9d46" font-weight="600">MEMS</text>
+
+    <!-- Onboard caps area -->
+    <rect x="15" y="105" width="190" height="36" rx="4" fill="#fffde7" stroke="#f9a825" stroke-width="1" stroke-dasharray="4,2"/>
+    <text x="110" y="118" text-anchor="middle" font-size="8" fill="#856404">Onboard passive components</text>
+
+    <!-- C1 -->
+    <rect x="25" y="108" width="28" height="14" rx="2" fill="#fff3cd" stroke="#e6a700" stroke-width="1"/>
+    <text x="39" y="118" text-anchor="middle" font-size="8" fill="#856404" font-weight="700">C1</text>
+    <text x="60" y="115" font-size="7" fill="#856404">1 µF DC-block</text>
+
+    <!-- C2 -->
+    <rect x="167" y="108" width="28" height="14" rx="2" fill="#fff3cd" stroke="#e6a700" stroke-width="1"/>
+    <text x="181" y="118" text-anchor="middle" font-size="8" fill="#856404" font-weight="700">C2</text>
+    <text x="146" y="115" font-size="7" fill="#856404">1 µF decouple</text>
+
+    <!-- ▸ Pins on TOP of module (facing UNO Q) -->
+    <g>
+      <!-- VDD -->
+      <rect x="28" y="-2" width="14" height="16" rx="2" fill="#ffcccc" stroke="#c62828" stroke-width="2"/>
+      <text x="19" y="-8" text-anchor="end" font-size="8" fill="#c62828" font-weight="700">VDD</text>
+      <!-- GND -->
+      <rect x="103" y="-2" width="14" height="16" rx="2" fill="#e8e8e8" stroke="#666" stroke-width="1.5"/>
+      <text x="94" y="-8" text-anchor="end" font-size="8" fill="#444" font-weight="700">GND</text>
+      <!-- OUT -->
+      <rect x="178" y="-2" width="14" height="16" rx="2" fill="#dde8ff" stroke="#1565c0" stroke-width="2"/>
+      <text x="169" y="-8" text-anchor="end" font-size="8" fill="#1565c0" font-weight="700">OUT</text>
+    </g>
   </g>
 
-  <!-- Pin labels on UNO Q -->
-  <text x="137" y="272" font-size="8" fill="#2264c0" font-weight="700">◀ A0</text>
-  <text x="137" y="324" font-size="8" fill="#c00" font-weight="700">◀ 3.3V</text>
-  <text x="137" y="260" font-size="8" fill="#333">(audio in)</text>
+  <!-- ════════════════════════════════════════════════════════
+       WIRING — schematic orthogonal routing
+       ════════════════════════════════════════════════════════ -->
 
-  <!-- GND pin (one of the GND pins) -->
-  <text x="185" y="290" font-size="9" fill="#555">GND</text>
-  <rect x="140" y="290" width="10" height="16" rx="2" fill="#ccc" stroke="#666" stroke-width="1.5"/>
+  <!--
+    Connection points (global coords):
+    UNO Q bottom header — pins bottom edge at y = 50 + 140 + 12 = 202
+      - 3V3: center x = 40 + 258 + 8 = 306
+      - A0:  center x = 40 + 126 + 8 = 174
+    ELV MEMS1 top header — pins top edge at y = 330 - 2 = 328
+      - VDD: center x = 500 + 28 + 7 = 535
+      - GND: center x = 500 + 103 + 7 = 610
+      - OUT: center x = 500 + 178 + 7 = 685
 
-  <!-- LED Matrix area hint -->
-  <rect x="60" y="200" width="260" height="50" rx="4" fill="#1a1a2e" opacity="0.9"/>
-  <text x="190" y="220" text-anchor="middle" font-size="10" fill="#7cff7c">LED Matrix (13 × 8)</text>
-  <text x="190" y="240" text-anchor="middle" font-size="8" fill="#aaa">built-in grayscale display</text>
+    Wires go DOWN from UNO Q pins, then RIGHT horizontally, then UP to ELV MEMS1 pins.
+  -->
 
-  <!-- ELV MEMS1 module -->
-  <rect x="480" y="180" width="220" height="200" rx="8" fill="#fcfcfc" stroke="#2a9d46" stroke-width="3" filter="url(#shadow)"/>
-  <rect x="480" y="180" width="220" height="34" rx="8" fill="#2a9d46"/>
-  <rect x="480" y="208" width="220" height="6" fill="#2a9d46"/>
-  <text x="590" y="202" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">ELV MEMS1 Module</text>
+  <!-- WIRE 1: 3V3 → VDD (red) -->
+  <path d="M 306,204 L 306,250 L 535,250 L 535,326"
+        fill="none" stroke="#c62828" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Start dot -->
+  <circle cx="306" cy="204" r="4" fill="#c62828"/>
+  <!-- End arrow -->
+  <polygon points="535,322 531,330 539,330" fill="#c62828"/>
+  <!-- Net label box -->
+  <rect x="360" y="242" width="130" height="18" rx="3" fill="#ffebee" stroke="#c62828" stroke-width="1"/>
+  <text x="425" y="255" text-anchor="middle" font-size="10" fill="#c62828" font-weight="700">3V3 → VDD</text>
 
-  <!-- MEMS sensor element (on module) -->
-  <rect x="510" y="230" width="160" height="40" rx="4" fill="#e8f5e9" stroke="#2a9d46" stroke-width="1.5" stroke-dasharray="4,3"/>
-  <text x="590" y="248" text-anchor="middle" font-size="10" fill="#2a9d46" font-weight="600">SPU0410LR5H-QB</text>
-  <text x="590" y="262" text-anchor="middle" font-size="9" fill="#555">analog MEMS microphone</text>
+  <!-- WIRE 2: GND (near A0) → GND (black) -->
+  <path d="M 152,204 L 152,275 L 610,275 L 610,326"
+        fill="none" stroke="#222" stroke-width="2.5" stroke-linejoin="round"/>
+  <circle cx="152" cy="204" r="4" fill="#222"/>
+  <polygon points="610,322 606,330 614,330" fill="#222"/>
+  <!-- GND symbol (T) -->
+  <line x1="152" y1="230" x2="152" y2="242" stroke="#222" stroke-width="2.5"/>
+  <line x1="145" y1="242" x2="159" y2="242" stroke="#222" stroke-width="3"/>
+  <rect x="380" y="267" width="120" height="18" rx="3" fill="#eee" stroke="#333" stroke-width="1"/>
+  <text x="440" y="280" text-anchor="middle" font-size="10" fill="#333" font-weight="700">GND → GND</text>
 
-  <!-- C1 capacitor label -->
-  <line x1="520" y1="285" x2="530" y2="305" stroke="#999" stroke-width="1" stroke-dasharray="2,2"/>
-  <rect x="510" y="285" width="30" height="16" rx="3" fill="#fff3cd" stroke="#e6a700" stroke-width="1"/>
-  <text x="525" y="296" text-anchor="middle" font-size="8" fill="#856404">C1</text>
-  <text x="530" y="318" font-size="8" fill="#856404">1 µF DC-block</text>
+  <!-- WIRE 3: A0 → OUT (blue, dashed) -->
+  <path d="M 174,204 L 174,300 L 685,300 L 685,326"
+        fill="none" stroke="#1565c0" stroke-width="2.5" stroke-dasharray="8,5" stroke-linejoin="round"/>
+  <circle cx="174" cy="204" r="4" fill="#1565c0"/>
+  <polygon points="685,322 681,330 689,330" fill="#1565c0"/>
+  <rect x="360" y="292" width="130" height="18" rx="3" fill="#e3f2fd" stroke="#1565c0" stroke-width="1"/>
+  <text x="425" y="305" text-anchor="middle" font-size="10" fill="#1565c0" font-weight="700">A0 → OUT</text>
 
-  <!-- C2 capacitor label -->
-  <line x1="620" y1="285" x2="630" y2="305" stroke="#999" stroke-width="1" stroke-dasharray="2,2"/>
-  <rect x="620" y="285" width="30" height="16" rx="3" fill="#fff3cd" stroke="#e6a700" stroke-width="1"/>
-  <text x="635" y="296" text-anchor="middle" font-size="8" fill="#856404">C2</text>
-  <text x="650" y="318" font-size="8" fill="#856404">1 µF decouple</text>
-
-  <!-- Module pins -->
-  <g>
-    <!-- VDD pin -->
-    <text x="500" y="350" font-size="9" fill="red" font-weight="700">VDD</text>
-    <rect x="497" y="355" width="12" height="14" rx="2" fill="#ffcccc" stroke="#c00" stroke-width="1.5"/>
-
-    <!-- GND pin -->
-    <text x="555" y="350" font-size="9" fill="#555" font-weight="700">GND</text>
-    <rect x="552" y="355" width="12" height="14" rx="2" fill="#ccc" stroke="#666" stroke-width="1.5"/>
-
-    <!-- OUT pin -->
-    <text x="635" y="350" font-size="9" fill="#228" font-weight="700">OUT</text>
-    <rect x="630" y="355" width="14" height="14" rx="2" fill="#dde8ff" stroke="#4488ff" stroke-width="1.5"/>
+  <!-- ════════════════════════════════════════════════════════
+       FOOTER NOTES
+       ════════════════════════════════════════════════════════ -->
+  <g transform="translate(40, 535)">
+    <rect x="0" y="0" width="720" height="35" rx="6" fill="#fff8e1" stroke="#f9a825" stroke-width="1.5"/>
+    <text x="14" y="15" font-size="10" fill="#856404" font-weight="600">Notes:</text>
+    <text x="14" y="28" font-size="9" fill="#684c0a">
+      No external components required — C1 (1 µF DC-block) and C2 (1 µF decouple) are onboard.
+    </text>
+    <text x="340" y="15" font-size="9" fill="#684c0a">Power from 3V3 only (not 5V).</text>
+    <text x="340" y="28" font-size="9" fill="#684c0a">Keep jumper wires &lt; 15 cm.</text>
+    <!-- Legend -->
+    <line x1="600" y1="9" x2="618" y2="9" stroke="#c62828" stroke-width="2.5"/>
+    <text x="622" y="13" font-size="8" fill="#c62828">Power</text>
+    <line x1="600" y1="23" x2="618" y2="23" stroke="#222" stroke-width="2.5"/>
+    <text x="622" y="27" font-size="8" fill="#222">Ground</text>
+    <line x1="672" y1="9" x2="690" y2="9" stroke="#1565c0" stroke-width="2.5" stroke-dasharray="5,3"/>
+    <text x="694" y="13" font-size="8" fill="#1565c0">Signal</text>
   </g>
-
-  <!-- Wiring: 3.3V → VDD (red) -->
-  <path d="M 127,320 L 330,320 L 380,295 L 380,290 L 450,290 L 450,362 L 503,362"
-        fill="none" stroke="#e53935" stroke-width="2.5" marker-end="url(#arrow-end)"/>
-  <rect x="340" y="306" width="60" height="18" rx="4" fill="#ffebee" stroke="#e53935" stroke-width="1"/>
-  <text x="370" y="318" text-anchor="middle" font-size="9" fill="#c62828" font-weight="600">3.3V → VDD</text>
-
-  <!-- Wiring: GND → GND (black) -->
-  <path d="M 145,298 L 330,298 L 380,310 L 450,310 L 450,370 L 558,370"
-        fill="none" stroke="#333" stroke-width="2.5" marker-end="url(#arrow-end)"/>
-  <rect x="345" y="292" width="60" height="18" rx="4" fill="#eee" stroke="#333" stroke-width="1"/>
-  <text x="375" y="304" text-anchor="middle" font-size="9" fill="#333" font-weight="600">GND → GND</text>
-
-  <!-- Wiring: OUT → A0 (blue) -->
-  <path d="M 636,362 L 636,340 L 450,340 L 380,335 L 330,335 L 133,272"
-        fill="none" stroke="#4488ff" stroke-width="2.5" stroke-dasharray="6,4" marker-end="url(#arrow-end)"/>
-  <rect x="340" y="326" width="55" height="18" rx="4" fill="#e3f2fd" stroke="#4488ff" stroke-width="1"/>
-  <text x="367" y="338" text-anchor="middle" font-size="9" fill="#1565c0" font-weight="600">OUT → A0</text>
-
-  <!-- Note box -->
-  <rect x="60" y="458" width="680" height="30" rx="6" fill="#fff8e1" stroke="#f9a825" stroke-width="1.5"/>
-  <text x="400" y="478" text-anchor="middle" font-size="12" fill="#795548">
-    No external components needed — C1 (1 µF DC-block) and C2 (1 µF decoupling) are onboard the module
-  </text>
 </svg>
