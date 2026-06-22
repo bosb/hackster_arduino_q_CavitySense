@@ -1,69 +1,113 @@
-# Edge Impulse Setup Guide
+# Edge Impulse Setup Guide (CLI-first)
 
-## Project Summary
+## Overview
 
-| Item | Value |
-|------|-------|
-| Platform | Edge Impulse |
-| Project name | `cavitysense-wildlife` |
-| Target device | Arduino UNO Q |
-| Microcontroller | STM32 |
-| Audio input | ELV MEMS1 analog MEMS microphone |
-| Sample rate | 16 kHz mono |
-| Classes | `silence`, `wind_noise`, `wildlife_activity` |
+This guide uses Edge Impulse CLI tools exclusively — no web UI required for day-to-day operations. You only need the web UI once to create the project and get an API key.
 
-## A. Create Project
+### Prerequisites
 
-1. Go to [edgeimpulse.com](https://edgeimpulse.com) and create account
-2. Click **Create new project** → name: `cavitysense-wildlife`
-3. Select **Audio Classification**
+```bash
+# Install Edge Impulse CLI
+npm install -g edge-impulse-cli
 
-## B. Collect Training Data
+# Verify
+edge-impulse-uploader --version
+edge-impulse-daemon --version
+edge-impulse-run --version
+```
 
-Record WAV files on your laptop/phone and upload. Do NOT use live streaming.
+### One-time web setup
 
-| Class | What to Record | Target |
-|-------|---------------|--------|
-| `silence` | Quiet room, night ambient, outdoor forest background | 5-10 min |
-| `wind_noise` | Blow gently across mic, fan noise, paper rustling | 5-10 min |
-| `wildlife_activity` | Finger snaps, key jingling, high-frequency tapping, paper crinkling, short squeaks | 5-10 min |
+1. Go to <https://edgeimpulse.com> and create an account
+2. Create a new project named `cavitysense-wildlife`
+3. Choose **Audio Classification**
+4. Go to **Dashboard** → **Keys** → copy your **API key**
+5. Export it for CLI use:
 
-### Recording specs:
-- 16-bit WAV, **16 kHz**, mono
-- 10-30 second clips
-- Vary distance to mic and intensity
-- ~30 total samples minimum
+```bash
+export EI_API_KEY="ei_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+export EI_PROJECT_ID="xxxxx"
+```
 
-### Upload:
-1. Go to **Data acquisition** tab
-2. Click **Upload data** → select WAV files
-3. Label each file with the correct class
-4. Split data: 80% training, 20% testing
+---
+
+## A. Data Collection
+
+Follow `01_ml_pipeline/DATA_COLLECTION.md` to prepare audio samples.
+
+Expected structure:
+
+```
+01_ml_pipeline/samples/
+  silence/
+    silence_001.wav
+    silence_002.wav
+    ...
+  wind_noise/
+    wind_001.wav
+    ...
+  wildlife_activity/
+    bat_001.wav
+    snaps_001.wav
+    ...
+```
+
+---
+
+## B. Upload Data (CLI)
+
+```bash
+# Upload each class with the correct label
+edge-impulse-uploader \
+  --project-name cavitysense-wildlife \
+  --category training \
+  --label silence \
+  01_ml_pipeline/samples/silence/*.wav
+
+edge-impulse-uploader \
+  --project-name cavitysense-wildlife \
+  --category training \
+  --label wind_noise \
+  01_ml_pipeline/samples/wind_noise/*.wav
+
+edge-impulse-uploader \
+  --project-name cavitysense-wildlife \
+  --category training \
+  --label wildlife_activity \
+  01_ml_pipeline/samples/wildlife_activity/*.wav
+```
+
+Alternatively, use `edge-impulse-daemon` in data-forwarder mode for live labeling.
+
+### Split data (web UI required once)
+
+1. Go to your project in the browser
+2. **Data acquisition** → click **Perform train/test split**
+3. 80% training, 20% testing
+
+---
 
 ## C. Configure Impulse
 
-| Parameter | Value |
-|-----------|-------|
-| Window size | 1000 ms |
-| Window increase | 500 ms |
-| Processing block | MFCC |
-| Learning block | Classification (Neural Network) |
+These settings are configured in the web UI under **Impulse design**:
 
-### MFCC Settings
+### MFCC (Spectral Analysis)
 
 | Setting | Value |
 |---------|-------|
+| Window size | 1000 ms |
+| Window increase | 500 ms |
 | Frame length | 25 ms |
 | Frame stride | 10 ms |
-| Num coefficients | 13 |
+| Number of coefficients | 13 |
 | FFT length | 512 |
 | Low frequency | 300 Hz |
 | High frequency | 8000 Hz |
 | Noise floor | -52 dB |
 
-## D. Neural Network Architecture
+### Neural Network
 
-```text
+```
 Input (MFCC features)
 → Dense(16, relu)
 → Dropout(0.25)
@@ -80,29 +124,65 @@ Input (MFCC features)
 | Learning rate | 0.0005 |
 | Batch size | 32 |
 | Data augmentation | Add noise |
+| Target accuracy | > 80% |
 
-## E. Train, Validate, Export
+---
 
-1. Click **Generate features**
-2. Review feature explorer — classes should separate
-3. Click **Start training**
-4. Target accuracy: >80%
-5. Enable **INT8 quantization**
-6. Go to **Deployment** → **Arduino library** → **Build**
-7. Download ZIP, save as `cavitysense-wildlife_inferencing.zip`
+## D. Train & Export (CLI)
 
-## Expected Model Size
+### Train model
 
-- Quantized INT8: ~10-20 KB
-- RAM usage: ~20-30 KB
-- Well within UNO Q limits (128 KB RAM, 256 KB Flash)
+```bash
+# Trigger training via CLI
+edge-impulse-run --train --project-name cavitysense-wildlife
+```
 
-## Verification Checklist
+Wait for training to complete. Check status in the web UI. Target: > 80% accuracy on the test set.
 
-- [ ] 3 classes created: silence, wind_noise, wildlife_activity
-- [ ] At least 30 WAV samples uploaded
-- [ ] MFCC + NN impulse configured
-- [ ] Training accuracy >80%
-- [ ] INT8 quantization enabled
-- [ ] Arduino library ZIP exported
-- [ ] Model size < 20 KB
+### Export Arduino library
+
+```bash
+# Download the Arduino library ZIP
+edge-impulse-run --download 01_ml_pipeline/
+```
+
+This saves `cavitysense-wildlife_inferencing.zip` to `01_ml_pipeline/`.
+
+### Install the library
+
+```bash
+arduino-cli lib install --zip-path \
+  01_ml_pipeline/cavitysense-wildlife_inferencing.zip
+```
+
+---
+
+## E. Verify
+
+| Check | Expected |
+|-------|----------|
+| Training accuracy | > 80% |
+| INT8 quantization | Enabled |
+| Model size | < 20 KB |
+| Inference time per frame | < 64 ms |
+| ZIP installed as Arduino library | Compiles in `inference_test.ino` |
+
+---
+
+## Troubleshooting
+
+| Problem | Fix |
+|---------|-----|
+| `edge-impulse-uploader` not found | Run `npm install -g edge-impulse-cli` |
+| Upload fails with auth error | Check `EI_API_KEY` is set correctly |
+| Low accuracy | Add more varied training data; check class balance |
+| Model too large | Reduce NN layers; use fewer MFCC coefficients |
+
+---
+
+## References
+
+- <https://docs.edgeimpulse.com/docs/tools/edge-impulse-cli>
+- <https://docs.edgeimpulse.com/docs/edge-impulse-run>
+- <https://www.avosound.com/de/geraeusche/tiere/fledermaus/>
+- <https://www.fledermausschutz-suedhessen.de/praktisches/fledermausrufe.htm>

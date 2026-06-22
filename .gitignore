@@ -14,6 +14,10 @@ build/
 # Environment
 deploy.env
 
+# ML pipeline training data (not redistributed)
+01_ml_pipeline/samples/
+01_ml_pipeline/raw/
+
 # Python
 __pycache__/
 *.pyc

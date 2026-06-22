@@ -1,65 +1,106 @@
 # Data Collection Guide
 
-## Recording Equipment
+## Overview
 
-- Laptop built-in microphone, external USB mic, or phone
-- Or use the ELV MEMS1 + UNO Q (record via serial, convert to WAV)
-- Any device that can record 16-bit/16 kHz WAV files
+Three classes: `silence`, `wind_noise`, `wildlife_activity`. At least 10 minutes per class.
 
-## Recording Environment
+**No audio files are stored in this repo.** Only the URLs and preparation commands are tracked.
 
-Find a **quiet indoor space** for base recordings. For wildlife-like sounds, use household objects.
+---
 
-## Per-Class Recording Instructions
+## Audio Sources
 
-### silence (10 minutes total)
+### Wildlife activity — bat calls (primary)
 
-Record the ambient background of:
-- A quiet room (no talking, no music)
-- Outdoor night ambient (if possible)
-- Near the target tree location
+| Source | URL | Notes |
+|--------|-----|-------|
+| Avosound bat collection | <https://www.avosound.com/de/geraeusche/tiere/fledermaus/> | Large library of European bat species echolocation and social calls |
+| Fledermausschutz Südhessen | <https://www.fledermausschutz-suedhessen.de/praktisches/fledermausrufe.htm> | Recordings of multiple bat species with spectrograms |
 
-Keep the mic stationary. Avoid sudden noises.
+Download a diverse selection — different species, call types (social, feeding buzz, search-phase), and environments.
 
-### wind_noise (10 minutes total)
+### Wildlife activity — synthetic sounds (supplementary)
 
-Simulate wind by:
-- Blowing gently across the microphone at varying distances (5-30 cm)
-- Moving a sheet of paper near the mic
-- Recordings near a fan on low speed
-- Rustling fabric near the mic
+| Source | Description |
+|--------|-------------|
+| DIY | Finger snaps, key jingling, paper crinkling, tapping on wood, short squeaks, tongue clicks |
+| Record yourself at 16 kHz mono WAV, 10-30 second clips |
 
-### wildlife_activity (10 minutes total)
+### Silence
 
-Record acoustic events that simulate animal activity in a tree cavity:
-- **Finger snaps** — sharp, high-frequency bursts
-- **Key jingling** — metallic high-frequency sounds
-- **Paper crinkling** — broadband noise with high-frequency content
-- **Tapping on wood** — simulate woodpecker/bird activity
-- **Short squeaks** — using a squeaky toy or rubber sole on floor
-- **Clicking sounds** — tongue clicks, pen clicks
+Record quiet indoor and outdoor ambient. No talking, no music.
 
-Vary the intensity (soft to loud) and distance (10-100 cm from mic).
+### Wind noise
 
-## File Format
+Blow gently across the mic, move a sheet of paper near it, or record near a fan on low speed.
 
-- 16-bit PCM WAV
-- 16 kHz sample rate
-- Mono (single channel)
-- Keep clips 10-30 seconds each
-- Name files like: `silence_01.wav`, `wind_noise_03.wav`, `wildlife_05.wav`
+---
 
-## Upload to Edge Impulse
+## Prerequisites
 
-1. Go to **Data acquisition** → **Upload data**
-2. Select all WAV files for one class
-3. Label with the class name
-4. Auto-split: 80% training / 20% testing
-5. Repeat for each class
+- `ffmpeg` (install via `brew install ffmpeg` or `apt install ffmpeg`)
+- At least ~500 MB free disk for downloaded + processed audio
 
-## Tips for Good Classification
+---
 
-- More variety > more quantity
-- Include some recordings with **mixed** sounds (e.g., wind + faint wildlife)
-- Add some recordings at the actual deployment location
-- If classifier struggles, add more examples of the confusing pair
+## Workflow
+
+### 1. Download raw audio (outside repo)
+
+```bash
+# Create a download directory OUTSIDE the repo
+mkdir -p ~/cavitysense_raw/bat_calls
+```
+
+Download bat call WAV/MP3 files from the URLs above into `~/cavitysense_raw/bat_calls/`. Do not check these into the project.
+
+### 2. Prepare samples
+
+```bash
+# Create output directories (gitignored)
+mkdir -p 01_ml_pipeline/samples/silence
+mkdir -p 01_ml_pipeline/samples/wind_noise
+mkdir -p 01_ml_pipeline/samples/wildlife_activity
+
+# Convert and label bat calls
+# Name convention: label_name.wav or the script infers from directory
+for f in ~/cavitysense_raw/bat_calls/*.wav; do
+  ffmpeg -y -i "$f" \
+    -ar 16000 -ac 1 -sample_fmt s16 \
+    01_ml_pipeline/samples/wildlife_activity/$(basename "$f")
+done
+
+# Record silence / wind noise directly into the right directory
+# (Record using Audacity, sox, or the UNO Q itself)
+```
+
+### 3. Verify sample rate
+
+```bash
+ffprobe 01_ml_pipeline/samples/wildlife_activity/example.wav \
+  2>&1 | grep -E 'Audio:|Hz'
+```
+
+Every file must be: **16-bit PCM, 16 kHz, mono**.
+
+---
+
+## Data Budget
+
+| Class | Target total | Min clips | Source |
+|-------|-------------|-----------|--------|
+| `silence` | 10 min | 20 | DIY record |
+| `wind_noise` | 10 min | 20 | DIY record |
+| `wildlife_activity` | 10 min | 30 | Bat URLs + DIY supplementary |
+
+More variety > more quantity. Include some recordings with mixed sounds (wind + faint wildlife).
+
+---
+
+## Licensing
+
+- Bat call recordings from public databases may be CC-licensed or research-use only
+- **Do not redistribute the downloaded audio files**
+- This repo only tracks the URLs and preparation commands
+- DIY recordings are your own work and free to use
+- If publishing the project (Hackster, GitHub), note that the model was trained using publicly available bat call datasets and DIY recordings; do not rehost the original audio files
