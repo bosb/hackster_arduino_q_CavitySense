@@ -2,6 +2,8 @@
 
 Low-cost acoustic monitoring node that detects wildlife activity inside tree cavities using Arduino UNO Q + ELV MEMS1 analog MEMS microphone + Edge Impulse TinyML + App Lab dashboard.
 
+![CavitySense concept](08_documentation/photos/cavitysense_concept.png)
+
 ## Project Structure
 
 | Module | Purpose |
