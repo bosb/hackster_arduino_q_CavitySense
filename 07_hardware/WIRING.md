@@ -17,6 +17,8 @@
 5. No external capacitors needed — C1 (1 µF) and C2 (1 µF) are onboard the module
 6. Re-check every connection before powering on
 
+![Wiring diagram](wiring_diagram.svg)
+
 ## Capture Note
 
 The ELV MEMS1 (Knowles SPU0410LR5H-QB) outputs an analog signal centered at ~VDD/2 ≈ 1.65 V. The firmware self-calibrates the DC bias at startup and samples at 16 kHz via GPT timer (TIM6) + ADC.
